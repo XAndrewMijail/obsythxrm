@@ -1,3 +1,5 @@
+‘use client’;
+
 import { useState, useEffect } from ‘react’;
 
 export default function ObsythPage() {
@@ -6,9 +8,8 @@ const [selectedPlan, setSelectedPlan] = useState({ name: ‘’, price: ‘’, 
 const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
 useEffect(() => {
-// Crear partículas
 const particlesContainer = document.querySelector(’.particles’);
-if (particlesContainer) {
+if (particlesContainer && particlesContainer.children.length === 0) {
 for (let i = 0; i < 50; i++) {
 const particle = document.createElement(‘div’);
 particle.className = ‘particle’;
@@ -26,12 +27,16 @@ particlesContainer.appendChild(particle);
 const openPayment = (name: string, price: string, wallet: string) => {
 setSelectedPlan({ name, price, wallet });
 setActiveModal(true);
+if (typeof document !== ‘undefined’) {
 document.body.style.overflow = ‘hidden’;
+}
 };
 
 const closePayment = () => {
 setActiveModal(false);
+if (typeof document !== ‘undefined’) {
 document.body.style.overflow = ‘auto’;
+}
 };
 
 const toggleFaq = (index: number) => {
@@ -106,7 +111,7 @@ author: ‘Sofia K.’
 ];
 
 return (
-<>
+<div style={{ background: ‘#000000’, minHeight: ‘100vh’ }}>
 <style jsx global>{`
 * {
 margin: 0;
@@ -115,6 +120,10 @@ box-sizing: border-box;
 }
 
 ```
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000000;
@@ -142,6 +151,7 @@ box-sizing: border-box;
       letter-spacing: 4px;
       background: linear-gradient(135deg, #007AFF, #00D4FF);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: glow 2s ease-in-out infinite;
     }
@@ -195,20 +205,25 @@ box-sizing: border-box;
       width: 100%;
       height: 100%;
       overflow: hidden;
+      pointer-events: none;
     }
 
     .particle {
       position: absolute;
       background: rgba(0, 122, 255, 0.3);
       border-radius: 50%;
-      animation: float 15s infinite;
+      pointer-events: none;
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
       10% { opacity: 1; }
       90% { opacity: 1; }
       100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+    }
+
+    .particle {
+      animation: float 15s infinite linear;
     }
 
     .hero-content {
@@ -222,6 +237,7 @@ box-sizing: border-box;
       margin-bottom: 20px;
       background: linear-gradient(135deg, #ffffff, #007AFF);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: slideDown 1s ease-out;
     }
@@ -254,7 +270,6 @@ box-sizing: border-box;
       font-weight: 600;
       transition: all 0.3s;
       box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3);
-      animation: pulse 2s infinite;
       cursor: pointer;
       border: none;
     }
@@ -264,8 +279,12 @@ box-sizing: border-box;
       50% { transform: scale(1.05); }
     }
 
+    .cta-button {
+      animation: pulse 2s infinite;
+    }
+
     .cta-button:hover {
-      transform: translateY(-3px);
+      transform: translateY(-3px) !important;
       box-shadow: 0 15px 40px rgba(0, 122, 255, 0.5);
     }
 
@@ -280,6 +299,7 @@ box-sizing: border-box;
       margin-bottom: 60px;
       background: linear-gradient(135deg, #ffffff, #007AFF);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
@@ -337,12 +357,15 @@ box-sizing: border-box;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
+      z-index: 10;
     }
 
     .plan-name {
       font-size: 28px;
       margin-bottom: 10px;
       color: #ffffff;
+      position: relative;
+      z-index: 10;
     }
 
     .plan-price {
@@ -350,6 +373,8 @@ box-sizing: border-box;
       font-weight: 700;
       color: #007AFF;
       margin-bottom: 20px;
+      position: relative;
+      z-index: 10;
     }
 
     .plan-price span {
@@ -360,6 +385,8 @@ box-sizing: border-box;
     .plan-features {
       list-style: none;
       margin-bottom: 30px;
+      position: relative;
+      z-index: 10;
     }
 
     .plan-features li {
@@ -386,6 +413,8 @@ box-sizing: border-box;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
+      position: relative;
+      z-index: 10;
     }
 
     .plan-button:hover {
@@ -478,18 +507,20 @@ box-sizing: border-box;
     .faq-answer {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s, padding 0.3s;
+      transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
       padding: 0 25px;
       color: #aaaaaa;
+      line-height: 1.6;
     }
 
     .faq-item.active .faq-answer {
-      max-height: 200px;
+      max-height: 300px;
       padding: 0 25px 25px 25px;
     }
 
     .faq-icon {
       transition: transform 0.3s;
+      display: inline-block;
     }
 
     .faq-item.active .faq-icon {
@@ -540,6 +571,8 @@ box-sizing: border-box;
       transition: all 0.3s;
       background: none;
       border: none;
+      line-height: 1;
+      padding: 0;
     }
 
     .close-modal:hover {
@@ -558,6 +591,7 @@ box-sizing: border-box;
       align-items: center;
       justify-content: center;
       color: #666;
+      font-size: 14px;
     }
 
     .wallet-address {
@@ -566,9 +600,10 @@ box-sizing: border-box;
       border-radius: 10px;
       border: 1px solid #007AFF;
       word-break: break-all;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
       color: #00D4FF;
       margin-top: 20px;
+      font-size: 14px;
     }
 
     .footer {
@@ -578,11 +613,17 @@ box-sizing: border-box;
       border-top: 1px solid rgba(0, 122, 255, 0.2);
     }
 
+    .footer p {
+      margin: 5px 0;
+    }
+
     @media (max-width: 768px) {
       .hero h1 { font-size: 42px; }
       .section-title { font-size: 36px; }
       .navbar { padding: 15px 20px; }
-      .nav-links { gap: 20px; }
+      .nav-links { gap: 20px; font-size: 14px; }
+      .section { padding: 60px 20px; }
+      .logo { font-size: 24px; }
     }
   `}</style>
 
@@ -711,26 +752,30 @@ box-sizing: border-box;
     </div>
   </section>
 
-  <div className={`payment-modal ${activeModal ? 'active' : ''}`} onClick={closePayment}>
-    <div className="payment-content" onClick={(e) => e.stopPropagation()}>
-      <button className="close-modal" onClick={closePayment}>&times;</button>
-      <h2>Plan {selectedPlan.name}</h2>
-      <p style={{ fontSize: '36px', color: '#007AFF', margin: '20px 0' }}>
-        {selectedPlan.price} USDT
-      </p>
-      
-      <div className="qr-placeholder">
-        <span>Coloca tu QR aquí</span>
+  {activeModal && (
+    <div className="payment-modal active" onClick={closePayment}>
+      <div className="payment-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-modal" onClick={closePayment}>&times;</button>
+        <h2 style={{ marginBottom: '10px' }}>Plan {selectedPlan.name}</h2>
+        <p style={{ fontSize: '36px', color: '#007AFF', margin: '20px 0', fontWeight: 'bold' }}>
+          {selectedPlan.price} USDT
+        </p>
+        
+        <div className="qr-placeholder">
+          <span>Coloca tu QR aquí</span>
+        </div>
+        
+        <p style={{ color: '#aaaaaa', marginBottom: '10px', fontSize: '14px' }}>
+          Dirección de Wallet:
+        </p>
+        <div className="wallet-address">{selectedPlan.wallet}</div>
+        
+        <p style={{ color: '#666', marginTop: '20px', fontSize: '14px' }}>
+          Envía el pago y contacta a soporte con tu comprobante
+        </p>
       </div>
-      
-      <p style={{ color: '#aaaaaa', marginBottom: '10px' }}>Dirección de Wallet:</p>
-      <div className="wallet-address">{selectedPlan.wallet}</div>
-      
-      <p style={{ color: '#666', marginTop: '20px', fontSize: '14px' }}>
-        Envía el pago y contacta a soporte con tu comprobante
-      </p>
     </div>
-  </div>
+  )}
 
   <footer className="footer">
     <p>&copy; 2025 OBSYTH. Todos los derechos reservados.</p>
@@ -738,7 +783,7 @@ box-sizing: border-box;
       Recuperación de Wallets Blockchain Profesional
     </p>
   </footer>
-</>
+</div>
 ```
 
 );
